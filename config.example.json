@@ -1,0 +1,7 @@
+{
+    "mail": "myDoodleMail@example.com",
+    "pw": "myDoodlePassword",
+    "skip": [
+        "Name of Doodle that can be skipped"
+    ]
+}

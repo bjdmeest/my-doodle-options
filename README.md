@@ -1,0 +1,27 @@
+# Scrape Doodle
+
+## Install
+
+```
+npm i
+```
+
+## Use
+
+Copy `config.example.json` to `config.json` and adjust accordingly
+
+### Fetch Doodle
+
+```
+node ./fetchDoodle.js
+```
+
+### Make ICS file
+
+```
+node ./makeICS.js
+```
+
+### Use
+
+Upload to an online location and link to it from your calendar

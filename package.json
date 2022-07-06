@@ -1,0 +1,18 @@
+{
+  "name": "doodle-my-options",
+  "version": "0.1.0",
+  "description": "Get my Doodle options",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben De Meester",
+  "license": "MIT",
+  "dependencies": {
+    "ics": "^2.35.0",
+    "luxon": "^2.4.0",
+    "node-fetch": "^2.0.0",
+    "openid-client": "^5.1.8",
+    "selenium-webdriver": "^4.3.0"
+  }
+}
