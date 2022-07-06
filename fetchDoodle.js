@@ -14,6 +14,7 @@ const config = require('./config.json');
 
         await driver.manage().setTimeouts({ implicit: 1000 })
 
+        await driver.wait(until.elementLocated(By.id('onetrust-accept-btn-handler')), 10000);
         let cookieButton = await driver.findElement(By.id('onetrust-accept-btn-handler'));
         await cookieButton.click();
 
@@ -29,12 +30,19 @@ const config = require('./config.json');
 
         let invitationBoxes = await (await driver.findElement(By.css('[class^=ActivitiesList]'))).findElements(By.css('[class^=Link]'))
         let invitations = await Promise.all(invitationBoxes.map(async (box) => {
+            try {
+                await box.findElement(By.className('DateStack'))
+                return null;
+            } catch (e) {
+                // Perfect, still active
+            }
             let invite = {};
             invite.name = (await (await box.findElement(By.css('[class^=Title]'))).getText()).trim()
             invite.link = await box.getAttribute('href')
             invite.id = invite.link.split('/').slice(-1)[0];
             return invite
         }));
+        invitations = invitations.filter(inv => inv !== null);
         for (let index = 0; index < invitations.length; index++) {
             const invite = invitations[index];
             await driver.get(invite.link);
