@@ -17,6 +17,7 @@ const config = require('./config.json');
         await driver.wait(until.elementLocated(By.id('onetrust-accept-btn-handler')), 10000);
         let cookieButton = await driver.findElement(By.id('onetrust-accept-btn-handler'));
         await cookieButton.click();
+        await driver.wait(until.stalenessOf(cookieButton), 4000);
 
         let mailBox = await driver.findElement(By.id('username'));
         await mailBox.sendKeys(config.mail);
@@ -45,6 +46,9 @@ const config = require('./config.json');
         invitations = invitations.filter(inv => inv !== null);
         for (let index = 0; index < invitations.length; index++) {
             const invite = invitations[index];
+            if (config.only.length > 0 && config.only.indexOf(invite.name) == -1) {
+                continue;
+            }
             await driver.get(invite.link);
             try {
                 await driver.wait(until.elementLocated(By.className("ParticipationTable")), 10000);
@@ -54,8 +58,14 @@ const config = require('./config.json');
                 const header = await Promise.all(thBox.map(async (th) => {
                     return (await th.getText()).trim();
                 }))
+                await driver.wait(until.elementLocated(By.className("ParticipationTable__rows")), 10000);
+                invite.participations = [];
                 const rows = await tableBox.findElements(By.css('tbody tr'));
-                invite.participations = await Promise.all(rows.map(async (row) => {
+                for (let index = 0; index < rows.length; index++) {
+                    const row = rows[index];
+                    if ((await row.getAttribute('class')).indexOf('ParticipationTable__final-row') >= 0) {
+                        continue;
+                    }
                     const participation = {}
                     try {
                         const thBox = await row.findElement(By.css('th'));
@@ -69,9 +79,10 @@ const config = require('./config.json');
                         }));
                     } catch (e) {
                         // no biggy
+                        var omg = 12;
                     }
-                    return participation;
-                }));
+                    invite.participations.push(participation);
+                }
             } catch (e) {
                 continue;
             }

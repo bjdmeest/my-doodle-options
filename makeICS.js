@@ -6,7 +6,7 @@ const fs = require('fs');
 
 const events = [];
 doodle.forEach(invite => {
-    if (config.skip.indexOf(invite.name) >= 0) {
+    if (config.only.length > 0 && config.only.indexOf(invite.name) == -1) {
         return;
     }
     if (!invite.participations) {
@@ -14,6 +14,9 @@ doodle.forEach(invite => {
     }
     const myParticipations = invite.participations.filter(p => p.name?.endsWith('\nYou'));
     if (!myParticipations.length > 0) {
+        return;
+    }
+    if (!myParticipations[0].options) {
         return;
     }
     myParticipations[0].options.forEach(option => {
