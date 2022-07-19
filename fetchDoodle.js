@@ -1,7 +1,7 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const fsp = require('fs').promises;
 const path = require('path');
-const config = require('./config.json');
+const config = require('./config');
 
 (async function firstScript() {
 
@@ -17,7 +17,7 @@ const config = require('./config.json');
         await driver.wait(until.elementLocated(By.id('onetrust-accept-btn-handler')), 10000);
         let cookieButton = await driver.findElement(By.id('onetrust-accept-btn-handler'));
         await cookieButton.click();
-        await driver.wait(until.stalenessOf(cookieButton), 4000);
+        await driver.wait(until.elementIsNotVisible(cookieButton), 4000);
 
         let mailBox = await driver.findElement(By.id('username'));
         await mailBox.sendKeys(config.mail);

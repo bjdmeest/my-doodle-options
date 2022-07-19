@@ -8,7 +8,7 @@ npm i
 
 ## Use
 
-Copy `config.example.json` to `config.json` and adjust accordingly
+Copy `config.example.js` to `config.js` and adjust accordingly
 
 ### Fetch Doodle
 

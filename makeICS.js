@@ -1,6 +1,6 @@
 const ics = require('ics')
 const doodle = require('./doodle.json');
-const config = require('./config.json');
+const config = require('./config');
 const { DateTime } = require("luxon");
 const fs = require('fs');
 
