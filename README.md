@@ -13,7 +13,7 @@ Copy `config.example.js` to `config.js` and adjust accordingly
 ### Fetch Doodle
 
 ```
-node ./fetchDoodle.js
+node ./fetchDoodleAPI.js
 ```
 
 ### Make ICS file

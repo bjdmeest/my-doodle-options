@@ -5,32 +5,20 @@ const { DateTime } = require("luxon");
 const fs = require('fs');
 
 const events = [];
-doodle.forEach(invite => {
-    if (config.only.length > 0 && config.only.indexOf(invite.name) == -1) {
-        return;
-    }
-    if (!invite.participations) {
-        return;
-    }
-    const myParticipations = invite.participations.filter(p => p.name?.endsWith('\nYou'));
-    if (!myParticipations.length > 0) {
-        return;
-    }
-    if (!myParticipations[0].options) {
-        return;
-    }
-    myParticipations[0].options.forEach(option => {
-        if (option.value === 'Declined') {
+doodle.forEach(activity => {
+    activity.options.forEach(option => {
+        if (option.vote === 'NO') {
             return;
         }
-        const {start, end} = parseDate(option.date);
+        const start = option.allDay ? (DateTime.fromISO(option.startAt)).set({hour: 8}) : DateTime.fromISO(option.startAt);
+        const end = option.allDay ? (DateTime.fromISO(option.startAt)).set({hour: 17}) : DateTime.fromISO(option.endAt);
         events.push({
             start: [start.year, start.month, start.day, start.hour, start.minute],
             end: [end.year, end.month, end.day, end.hour, end.minute],
-            title: `[Doodle]: ${invite.name}`,
-            description: `Doodle invite for ${invite.name},\nlink: ${invite.link}`,
+            title: `[Doodle]: ${activity.name}`,
+            description: `Doodle invite for ${activity.name},\nlink: ${activity.link}`,
             // location: 'Folsom Field, University of Colorado (finish line)',
-            url: invite.link,
+            url: activity.link,
             // geo: { lat: 40.0095, lon: 105.2669 },
             // categories: ['10k races', 'Memorial Day Weekend', 'Boulder CO'],
             // status: 'CONFIRMED',

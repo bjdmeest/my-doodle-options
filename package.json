@@ -4,7 +4,9 @@
   "description": "Get my Doodle options",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mytest": "node test.js",
+    "christmas": "node christmas.js"
   },
   "author": "Ben De Meester",
   "license": "MIT",
