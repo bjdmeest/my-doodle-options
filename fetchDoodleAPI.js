@@ -2,10 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const BEARER = fs.readFileSync(path.resolve(__dirname, 'bearer.txt'), 'utf8');
 const spawn = require('child_process').spawn;
-
-function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+const config = require('./config');
 
 const run = (commandLine) => new Promise(function (resolve, reject) {
     const [command, ...args] = commandLine.split(/\s+/)
@@ -69,7 +66,7 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
     for (let index = 0; index < activities.activities.length; index++) {
         const activity = activities.activities[index];
         console.log(`doing ${activity.title}`);
-        if (activity.state === "CLOSED" || ((new Date(activity.updatedAt)).getTime() < hunderdaysago)) {
+        if (activity.state === "CLOSED" || ((new Date(activity.updatedAt)).getTime() < hunderdaysago) || (config.exclude.indexOf(activity.title) >= 0)) {
             continue;
         }
         const doodleActivity = {

@@ -6,6 +6,9 @@ const fs = require('fs');
 
 const events = [];
 doodle.forEach(activity => {
+    if (config.exclude.indexOf(activity.name) >= 0) {
+        return;
+    }
     activity.options.forEach(option => {
         if (option.vote === 'NO') {
             return;

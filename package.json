@@ -14,7 +14,6 @@
     "ics": "^2.35.0",
     "luxon": "^2.4.0",
     "node-fetch": "^2.0.0",
-    "openid-client": "^5.1.8",
     "selenium-webdriver": "^4.3.0"
   }
 }
