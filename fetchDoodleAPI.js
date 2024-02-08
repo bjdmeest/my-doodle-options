@@ -66,7 +66,7 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
     for (let index = 0; index < activities.activities.length; index++) {
         const activity = activities.activities[index];
         console.log(`doing ${activity.title}`);
-        if (activity.state === "CLOSED" || ((new Date(activity.updatedAt)).getTime() < hunderdaysago) || (config.exclude.indexOf(activity.title) >= 0)) {
+        if (activity.state === "CLOSED" || ((new Date(activity.updatedAt)).getTime() < hunderdaysago)) {
             continue;
         }
         const doodleActivity = {
