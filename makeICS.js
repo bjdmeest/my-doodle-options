@@ -55,6 +55,7 @@ const ftp = require("basic-ftp");
                 host: config.ftp.host,
                 user: config.ftp.username,
                 password: config.ftp.password
+                // secure: true ? then follow https://stackoverflow.com/questions/31673587/error-unable-to-verify-the-first-certificate-in-nodejs
             })
             await client.uploadFrom(`${__dirname}/doodle.ics`, config.ftp.target)
         }
