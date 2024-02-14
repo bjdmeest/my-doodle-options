@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const BEARER = fs.readFileSync(path.resolve(__dirname, 'bearer.txt'), 'utf8');
 const spawn = require('child_process').spawn;
-const config = require('./config');
 
 const run = (commandLine) => new Promise(function (resolve, reject) {
     const [command, ...args] = commandLine.split(/\s+/)

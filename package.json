@@ -6,11 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mytest": "node test.js",
+    "ics:upload": "node .\\makeICS.js -u",
     "christmas": "node christmas.js"
   },
   "author": "Ben De Meester",
   "license": "MIT",
   "dependencies": {
+    "basic-ftp": "^5.0.4",
     "ics": "^2.35.0",
     "luxon": "^2.4.0",
     "node-fetch": "^2.0.0",

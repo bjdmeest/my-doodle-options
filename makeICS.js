@@ -3,45 +3,67 @@ const doodle = require('./doodle.json');
 const config = require('./config');
 const { DateTime } = require("luxon");
 const fs = require('fs');
+const fsp = require('fs').promises;
+const { argv } = require('process');
+const ftp = require("basic-ftp");
 
-const events = [];
-doodle.forEach(activity => {
-    if (config.exclude.indexOf(activity.name) >= 0) {
-        return;
-    }
-    activity.options.forEach(option => {
-        if (option.vote === 'NO') {
+(async function main() {
+    const events = [];
+    doodle.forEach(activity => {
+        if (config.exclude.indexOf(activity.name) >= 0) {
             return;
         }
-        const start = option.allDay ? (DateTime.fromISO(option.startAt)).set({hour: 8}) : DateTime.fromISO(option.startAt);
-        const end = option.allDay ? (DateTime.fromISO(option.startAt)).set({hour: 17}) : DateTime.fromISO(option.endAt);
-        events.push({
-            start: [start.year, start.month, start.day, start.hour, start.minute],
-            end: [end.year, end.month, end.day, end.hour, end.minute],
-            title: `[Doodle]: ${activity.name}`,
-            description: `Doodle invite for ${activity.name},\nlink: ${activity.link}`,
-            // location: 'Folsom Field, University of Colorado (finish line)',
-            url: activity.link,
-            // geo: { lat: 40.0095, lon: 105.2669 },
-            // categories: ['10k races', 'Memorial Day Weekend', 'Boulder CO'],
-            // status: 'CONFIRMED',
-            // busyStatus: 'BUSY',
-            // organizer: { name: 'Admin', email: 'Race@BolderBOULDER.com' },
-            // attendees: [
-            // { name: 'Adam Gibbons', email: 'adam@example.com', rsvp: true, partstat: 'ACCEPTED', role: 'REQ-PARTICIPANT' },
-            // { name: 'Brittany Seaton', email: 'brittany@example2.org', dir: 'https://linkedin.com/in/brittanyseaton', role: 'OPT-PARTICIPANT' }
-            // ]
+        activity.options.forEach(option => {
+            if (option.vote === 'NO') {
+                return;
+            }
+            const start = option.allDay ? (DateTime.fromISO(option.startAt)).set({ hour: 8 }) : DateTime.fromISO(option.startAt);
+            const end = option.allDay ? (DateTime.fromISO(option.startAt)).set({ hour: 17 }) : DateTime.fromISO(option.endAt);
+            events.push({
+                start: [start.year, start.month, start.day, start.hour, start.minute],
+                end: [end.year, end.month, end.day, end.hour, end.minute],
+                title: `[Doodle]: ${activity.name}`,
+                description: `Doodle invite for ${activity.name},\nlink: ${activity.link}`,
+                // location: 'Folsom Field, University of Colorado (finish line)',
+                url: activity.link,
+                // geo: { lat: 40.0095, lon: 105.2669 },
+                // categories: ['10k races', 'Memorial Day Weekend', 'Boulder CO'],
+                // status: 'CONFIRMED',
+                // busyStatus: 'BUSY',
+                // organizer: { name: 'Admin', email: 'Race@BolderBOULDER.com' },
+                // attendees: [
+                // { name: 'Adam Gibbons', email: 'adam@example.com', rsvp: true, partstat: 'ACCEPTED', role: 'REQ-PARTICIPANT' },
+                // { name: 'Brittany Seaton', email: 'brittany@example2.org', dir: 'https://linkedin.com/in/brittanyseaton', role: 'OPT-PARTICIPANT' }
+                // ]
+            })
         })
     })
-})
 
-const { error, value } = ics.createEvents(events)
+    const { error, value } = ics.createEvents(events)
 
-if (error) {
-    console.log(error)
-    return
-}
-fs.writeFileSync(`${__dirname}/doodle.ics`, value)
+    if (error) {
+        console.log(error)
+        return
+    }
+    await fsp.writeFile(`${__dirname}/doodle.ics`, value)
+
+    if (argv[2] === '-u') {
+        const client = new ftp.Client()
+        client.ftp.verbose = true
+        try {
+            await client.access({
+                host: config.ftp.host,
+                user: config.ftp.username,
+                password: config.ftp.password
+            })
+            await client.uploadFrom(`${__dirname}/doodle.ics`, config.ftp.target)
+        }
+        catch (err) {
+            console.log(err)
+        }
+        client.close()
+    }
+})()
 
 function parseDate(str) {
     const orig = str;
@@ -65,7 +87,7 @@ function parseDate(str) {
     str = str.replace("-FRI", '');
     str = str.replace("-SAT", '');
     str = str.replace("-SUN", '');
-    if(!str.match(/$\d{4}/)) {
+    if (!str.match(/$\d{4}/)) {
         str = (new Date()).getFullYear() + '-' + str;
     }
     const strSplits = str.split('-')
