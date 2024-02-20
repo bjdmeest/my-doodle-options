@@ -98,7 +98,6 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
             doodleActivity.options.forEach(option => {
                 option.vote = "YES"
             })
-            continue;
         }
         // curl 'https://api.doodle.com/scheduling/scheduling-attempts/${id}/participants/me' --compressed -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Referer: https://doodle.com/' -H 'Content-Type: application/json' -H 'Authorization: ${BEARER}' -H 'Origin: https://doodle.com' -H 'Connection: keep-alive' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'TE: trailers'
         try {
