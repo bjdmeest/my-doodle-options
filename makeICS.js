@@ -23,7 +23,7 @@ const ftp = require("basic-ftp");
                 start: [start.year, start.month, start.day, start.hour, start.minute],
                 end: [end.year, end.month, end.day, end.hour, end.minute],
                 title: `[Doodle]: ${activity.name}`,
-                description: `Doodle invite for ${activity.name},\nlink: ${activity.link}`,
+                description: `Doodle invite for "${activity.name}",\nlink: ${activity.link}`,
                 // location: 'Folsom Field, University of Colorado (finish line)',
                 url: activity.link,
                 // geo: { lat: 40.0095, lon: 105.2669 },
@@ -45,7 +45,7 @@ const ftp = require("basic-ftp");
         console.log(error)
         return
     }
-    await fsp.writeFile(`${__dirname}/doodle.ics`, value)
+    await fsp.writeFile(`${__dirname}/doodle.ics`, value || "")
 
     if (argv[2] === '-u') {
         const client = new ftp.Client()
