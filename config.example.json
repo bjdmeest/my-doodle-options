@@ -1,0 +1,11 @@
+{
+    "ftp": {
+      "host": "domain name of ftp host you want to upload the ics to",
+      "username": "ftp username",
+      "password": "ftp password",
+      "target": "absolute path to the file on the ftp server"
+    },
+    "exclude": [
+        "Name of Doodle that you want to exclude"
+    ]
+}

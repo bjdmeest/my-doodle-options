@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const BEARER = fs.readFileSync(path.resolve(__dirname, 'bearer.txt'), 'utf8');
 const spawn = require('child_process').spawn;
+const config = require(path.resolve(__dirname, 'config.json'));
 
 const run = (commandLine) => new Promise(function (resolve, reject) {
     const [command, ...args] = commandLine.split(/\s+/)
@@ -27,6 +28,7 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
     console.log('START');
     // activities
     const doodle = [];
+    const touchedActivities = [];
     const hunderdaysago = new Date().getTime() - (100 * 24 * 60 * 60 * 1000);
     // curl 'https://api.doodle.com/scheduling/activities?pageSize=50' --compressed -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0' -H 'Accept: */*' -H 'Accept-Language: en-US,en;q=0.5' -H 'Accept-Encoding: gzip, deflate, br' -H 'Referer: https://doodle.com/' -H 'Authorization: ${BEARER}' -H 'Content-Type: application/json' -H 'Origin: https://doodle.com' -H 'Connection: keep-alive' -H 'Sec-Fetch-Dest: empty' -H 'Sec-Fetch-Mode: cors' -H 'Sec-Fetch-Site: same-site' -H 'TE: trailers'
     let execResult = {};
@@ -65,6 +67,7 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
     for (let index = 0; index < activities.activities.length; index++) {
         const activity = activities.activities[index];
         console.log(`doing ${activity.title}`);
+        touchedActivities.push(activity.title);
         if ((new Date(activity.updatedAt)).getTime() < hunderdaysago) {
             continue;
         }
@@ -131,6 +134,15 @@ const curlLocation = path.resolve("C://tools//cygwin//bin//curl.exe");
         })
         doodle.push(doodleActivity)
     }
+    // update exclude list
+    const trueExcludedActivities = [];
+    for (const touchedActivity of touchedActivities) {
+        if (config.exclude.includes(touchedActivity)) {
+            trueExcludedActivities.push(touchedActivity);
+        }
+    }
+    config.exclude = trueExcludedActivities;
+    fs.writeFileSync(path.resolve(__dirname, 'config.json'), JSON.stringify(config, null, 2), 'utf8');
     fs.writeFileSync(path.resolve(__dirname, 'doodle.json'), JSON.stringify(doodle, null, 2), 'utf8');
     console.log('STOP');
 })();
